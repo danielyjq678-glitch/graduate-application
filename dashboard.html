@@ -284,6 +284,29 @@ body {
 .tag.cet6 { background: var(--primary-light); color: var(--primary); }
 .tag.chinese { background: #faf5ff; color: #6b46c1; }
 
+/* Countdown chips on program cards */
+.countdown-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 2px 10px;
+  border-radius: 12px;
+  font-size: .73rem;
+  font-weight: 600;
+  white-space: nowrap;
+  margin-left: 6px;
+}
+.countdown-chip.urgent {
+  background: #fff5f5; color: #e53e3e;
+  animation: pulse 2s infinite;
+}
+.countdown-chip.soon { background: #fffaf0; color: #dd6b20; }
+.countdown-chip.normal { background: #f0fff4; color: #38a169; }
+.countdown-chip.past { background: #f7fafc; color: #a0aec0; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .6; }
+}
+
 .program-actions {
   display: flex;
   flex-direction: column;
@@ -555,9 +578,9 @@ body {
   <div class="header-inner">
     <h1>🎓 香港研究生申请追踪 · 2027/28</h1>
     <div class="header-right">
-      <div class="countdown-badge">
-        ⏳ 雅思三战倒计时
-        <span class="days" id="ielts-countdown">--</span> 天
+      <div class="countdown-badge" id="next-deadline-badge">
+        📅 <span id="next-deadline-label">PolyU 申请开放</span>
+        <span class="days" id="next-deadline-days">--</span> 天
       </div>
       <div class="today">📅 <span id="today-str">--</span></div>
     </div>
@@ -573,7 +596,7 @@ body {
     <div class="stat-info">
       <div class="stat-label">雅思目标</div>
       <div class="stat-value">6.5 <span style="font-weight:400;font-size:.75rem;">(小分≥6.0)</span></div>
-      <div class="stat-sub">二战 6.0 → 8.1三战</div>
+      <div class="stat-sub">二战 6.0 → 8.1三战 · PolyU 7.2开放</div>
     </div>
   </div>
   <div class="stat-card">
@@ -606,13 +629,13 @@ body {
 <div class="section-title">🏛️ 院校 & 专业</div>
 <div class="tabs" id="school-tabs">
   <button class="tab-btn active" data-tab="polyu">
-    🔴 香港理工大学 <span class="badge">PolyU · QS #57</span>
+    🔴 香港理工大学 <span class="badge">PolyU · QS #50</span>
   </button>
   <button class="tab-btn" data-tab="cityu">
-    🔵 香港城市大学 <span class="badge">CityU · QS #62</span>
+    🔵 香港城市大学 <span class="badge">CityU · QS #52</span>
   </button>
   <button class="tab-btn" data-tab="hkbu">
-    🟢 香港浸会大学 <span class="badge">HKBU · QS #244</span>
+    🟢 香港浸会大学 <span class="badge">HKBU · QS #216</span>
   </button>
 </div>
 
@@ -623,7 +646,7 @@ body {
     <div class="school-info">
       <h2>香港理工大学 · The Hong Kong Polytechnic University</h2>
       <div class="school-meta">
-        <span>📊 QS 2026 #57</span>
+        <span>📊 QS 2027 #50</span>
         <span>✅ AACSB · EQUIS 认证</span>
         <span>📍 红磡</span>
         <span>🎯 应用型导向 · 实践为重</span>
@@ -650,7 +673,7 @@ body {
     <div class="school-info">
       <h2>香港城市大学 · City University of Hong Kong</h2>
       <div class="school-meta">
-        <span>📊 QS 2026 #62</span>
+        <span>📊 QS 2027 #52</span>
         <span>✅ AACSB · EQUIS 认证</span>
         <span>📍 九龙塘</span>
         <span>🎯 商科+科技结合</span>
@@ -677,7 +700,7 @@ body {
     <div class="school-info">
       <h2>香港浸会大学 · Hong Kong Baptist University</h2>
       <div class="school-meta">
-        <span>📊 QS 2026 #244</span>
+        <span>📊 QS 2027 #216</span>
         <span>✅ AACSB · EQUIS · AMBA 三重认证</span>
         <span>📍 九龙塘</span>
         <span>🎯 保底选择 · 滚动录取</span>
@@ -775,6 +798,7 @@ const SCHOOLS = {
         fee: 'HK$525,600',
         ielts: '6.0',
         ddl: '2026.5.15 (Extended)',
+        openDate: '2026-07-02',
         match: 5,
         tags: [
           { cls: 'chinese', text: '中文授课' },
@@ -790,6 +814,7 @@ const SCHOOLS = {
         fee: 'HK$363,600',
         ielts: '6.0',
         ddl: '2026.4.30',
+        openDate: '2026-07-02',
         match: 4,
         tags: [
           { cls: 'ielts', text: '不限专业' },
@@ -805,6 +830,7 @@ const SCHOOLS = {
         fee: 'HK$351,000',
         ielts: '6.0',
         ddl: '2026.4.30',
+        openDate: '2026-07-02',
         match: 3,
         tags: [
           { cls: 'fee', text: '全奖可申请' },
@@ -819,6 +845,7 @@ const SCHOOLS = {
         fee: 'HK$363,000',
         ielts: '6.0',
         ddl: '2026.1.15',
+        openDate: '2026-07-02',
         match: 3,
         tags: [
           { cls: 'ddl', text: '⚠ 截止较早' },
@@ -843,6 +870,7 @@ const SCHOOLS = {
         fee: 'HK$378,000',
         ielts: '6.5',
         ddl: '2026.5.31',
+        openDate: '2026-09-16',
         match: 4,
         tags: [
           { cls: 'cet6', text: 'CET-6 450' },
@@ -858,6 +886,7 @@ const SCHOOLS = {
         fee: 'HK$403,200',
         ielts: '6.5',
         ddl: '2026.3.31',
+        openDate: '2026-09-16',
         match: 5,
         tags: [
           { cls: 'cet6', text: 'CET-6 490' },
@@ -873,6 +902,7 @@ const SCHOOLS = {
         fee: 'HK$267,300',
         ielts: '6.5',
         ddl: '2026.3.31',
+        openDate: '2026-09-16',
         match: 5,
         tags: [
           { cls: 'cet6', text: 'CET-6 450' },
@@ -888,6 +918,7 @@ const SCHOOLS = {
         fee: 'HK$384,000',
         ielts: '6.0',
         ddl: '2026.5.31',
+        openDate: '2026-09-16',
         match: 4,
         tags: [
           { cls: 'ielts', text: 'IELTS 6.0即可！' },
@@ -903,6 +934,7 @@ const SCHOOLS = {
         fee: 'HK$315,000',
         ielts: '6.0',
         ddl: '2026.5.31',
+        openDate: '2026-09-16',
         match: 3,
         tags: [
           { cls: 'ielts', text: 'IELTS 6.0即可' },
@@ -927,6 +959,7 @@ const SCHOOLS = {
         fee: 'HK$360,000',
         ielts: '6.5',
         ddl: '2026.6.15',
+        openDate: '2026-09-01',
         match: 4,
         tags: [
           { cls: 'fee', text: '🆕 新项目首年' },
@@ -942,6 +975,7 @@ const SCHOOLS = {
         fee: 'HK$298,000',
         ielts: '6.5（小分≥6.0）',
         ddl: '2026.6.30',
+        openDate: '2026-09-01',
         match: 5,
         tags: [
           { cls: 'ddl', text: '2027年1月入学' },
@@ -957,6 +991,7 @@ const SCHOOLS = {
         fee: 'HK$393,000',
         ielts: '6.5',
         ddl: '2026.6.4',
+        openDate: '2026-09-01',
         match: 4,
         tags: [
           { cls: 'cet6', text: 'CET-6 450' },
@@ -1052,18 +1087,21 @@ function renderProgramCard(prog, idx, statusState) {
   ).join('');
 
   const tagHtml = prog.tags.map(t => `<span class="tag ${t.cls}">${t.text}</span>`).join('');
+  const openDays = getDaysUntil(prog.openDate);
+  const countdownHtml = renderCountdownBadge(openDays);
 
   return `
     <div class="program-card ${getRankCardClass(idx)}" data-program-id="${prog.id}">
       <div class="program-card-inner">
         <div class="rank-badge ${getRankClass(idx)}">${idx + 1}</div>
         <div class="program-main">
-          <div class="program-name-zh">${prog.nameZh}</div>
+          <div class="program-name-zh">${prog.nameZh} ${countdownHtml}</div>
           <div class="program-name-en">${prog.nameEn}</div>
           <div class="program-tags">
             <span class="tag fee">💰 ${prog.fee}</span>
             <span class="tag ielts">📝 IELTS ${prog.ielts}</span>
-            <span class="tag ddl">📅 DDL: ${prog.ddl}</span>
+            <span class="tag ddl">📅 截止: ${prog.ddl}</span>
+            ${prog.openDate ? `<span class="tag ddl">🚀 开放: ${prog.openDate}</span>` : ''}
             <span class="tag match">${getMatchStars(prog.match)}</span>
             ${tagHtml}
           </div>
@@ -1170,20 +1208,81 @@ function setupTabs() {
 }
 
 // ===== COUNTDOWN =====
+// Key dates tracker - auto picks the nearest upcoming date
+const KEY_DATES = [
+  { label: 'PolyU 申请开放', date: '2026-07-02', icon: '🔴' },
+  { label: '雅思三战', date: '2026-08-01', icon: '📝' },
+  { label: 'CityU 申请开放(估)', date: '2026-09-16', icon: '🔵' },
+  { label: 'HKBU 申请开放(估)', date: '2026-09-01', icon: '🟢' },
+  { label: 'PolyU 首轮截止', date: '2026-10-20', icon: '🔴' },
+  { label: '缓考补考', date: '2026-09-01', icon: '⚠️' },
+];
+
+function getNextKeyDate() {
+  const now = new Date();
+  now.setHours(0, 0, 0, 0);
+  let nearest = null;
+  for (const kd of KEY_DATES) {
+    const d = new Date(kd.date + 'T00:00:00+08:00');
+    if (d >= now) {
+      if (!nearest || d < new Date(nearest.date + 'T00:00:00+08:00')) {
+        nearest = kd;
+      }
+    }
+  }
+  return nearest;
+}
+
 function updateCountdown() {
-  // IELTS exam target: Aug 1, 2026 (三战)
-  const target = new Date(2026, 7, 1); // Aug 1, 2026
+  const next = getNextKeyDate();
+  const labelEl = document.getElementById('next-deadline-label');
+  const daysEl = document.getElementById('next-deadline-days');
+  const badgeEl = document.getElementById('next-deadline-badge');
+
+  if (!next) {
+    labelEl.textContent = '所有节点已过';
+    daysEl.textContent = '✓';
+    return;
+  }
+
+  const target = new Date(next.date + 'T00:00:00+08:00');
   const now = new Date();
   const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
-  const el = document.getElementById('ielts-countdown');
-  if (diff > 0) {
-    el.textContent = diff;
+
+  labelEl.textContent = next.icon + ' ' + next.label;
+  if (diff > 30) {
+    daysEl.textContent = diff + ' 天';
+    badgeEl.style.background = 'rgba(255,255,255,.15)';
+  } else if (diff > 7) {
+    daysEl.textContent = diff + ' 天';
+    badgeEl.style.background = 'rgba(255,200,50,.25)';
+  } else if (diff > 0) {
+    daysEl.textContent = '仅剩 ' + diff + ' 天';
+    badgeEl.style.background = 'rgba(255,80,80,.35)';
   } else if (diff === 0) {
-    el.textContent = '今天';
+    daysEl.textContent = '今天!';
+    badgeEl.style.background = 'rgba(255,80,80,.5)';
   } else {
-    el.textContent = '已过';
-    el.style.color = '#fc8181';
+    daysEl.textContent = '已过';
   }
+}
+
+// Also update program card countdowns
+function getDaysUntil(dateStr) {
+  if (!dateStr) return null;
+  const target = new Date(dateStr + 'T00:00:00+08:00');
+  const now = new Date();
+  const diff = Math.ceil((target - now) / (1000 * 60 * 60 * 24));
+  return diff;
+}
+
+function renderCountdownBadge(days) {
+  if (days === null) return '';
+  if (days < 0) return '<span class="countdown-chip past">已截止</span>';
+  if (days === 0) return '<span class="countdown-chip urgent">🎯 今天开放!</span>';
+  if (days <= 7) return '<span class="countdown-chip urgent">⏰ ' + days + '天后开放</span>';
+  if (days <= 30) return '<span class="countdown-chip soon">📅 ' + days + '天后开放</span>';
+  return '<span class="countdown-chip normal">📅 ' + days + '天后开放</span>';
 }
 
 function updateToday() {
