@@ -1,0 +1,19 @@
+# 个人信息 & 私密文件 - 不上传 GitHub
+CLAUDE.md
+schools/*.md
+timeline/*.md
+materials/
+
+# 本地工具（仅 PC 使用）
+serve.py
+一键启动手机访问.bat
+
+# IDE
+.claude/
+.vscode/
+.idea/
+
+# OS
+Thumbs.db
+Desktop.ini
+.DS_Store
